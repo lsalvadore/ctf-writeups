@@ -1,7 +1,5 @@
 = CTF writeups
 
-'''
-
 This repository contains writeups for some of the hacking challenges, rooms and machines that I solved. In some cases I followed partially or completely one or more walkthroughs that I used later to elaborate my own personal solutions.
 
 == Structure
