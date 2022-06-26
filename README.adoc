@@ -1,0 +1,13 @@
+= CTF writeups
+
+'''
+
+This repository contains writeups for some of the hacking challenges, rooms and machines that I solved. In some cases I followed partially or completely one or more walkthroughs that I used later to elaborate my own personal solutions.
+
+== Structure
+
+Material is subdivided in the following directories:
+
+* CTFs: solutions for hacking events, including events organized by Hack The Box and Try Hack Me;
+* Hack The Box: solutions for machines and challenges released on Hack The Box platform;
+* Try Hack Me: solutions for rooms released on Try Hack Me platform.
