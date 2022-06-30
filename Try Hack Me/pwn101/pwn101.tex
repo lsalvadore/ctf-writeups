@@ -1,0 +1,22 @@
+\section{pwn101.}
+\par We start by disassembling the binary and analyzing the code for the \FunctionName{main} function, see listing \ref{pwn101_disassembly_main}.
+\begin{listing}
+	\input{pwn101.asm}
+	\caption{Disassembly of the \FunctionName{main} function.}
+	\label{pwn101_disassembly_main}
+\end{listing}
+\par At address \Address{0x8d5} we find the \FunctionName{gets} function, which often introduces buffer overflows. At line \Address{0x8c9} we read that \FunctionName{gets} writes at address \Address{rbp - 0x40}: we can write as many bytes we want starting at this address.
+\par At address \Address{0x90c} the \FunctionName{system} is called. We can read its argument at address \Address{0x905}: it is \Address{rip + 0x333}, i.e. \Address{0x90c + 0x333 = 0xc3f}: by reading the data into the binary, we discover that it is the address of the string ``\String{/bin/sh}''.
+\par We now examine the flow of the \FunctionName{main} function to understand how do we get to address \Address{0x90c}:  in this case it is very easy as we have only one conditionnal jump at address \Address{0x8e1}. By looking at the \InstructionName{cmp} instruction, we see that if the double word at address \Address{rbp - 0x4} is not \Hexadecimal{0x539} (which is the value that was written by the instruction at address \Address{0x896}), then the program will jump at \Address{main + 0x6b = 0x8f9}, giving us our shell.
+\par Thus, when we run the program, we only need to input enough bytes to overwrite the byte at \Address{rbp - 0x4} with something different than \Address{0x39} to get our shell. Listing \ref{pwn101_exploit} is a possible exploit written in \LanguageName{Python}.
+\begin{listing}
+	\insertcode{python}{pwn101.py}
+	\caption{Exploit for pwn101.}
+	\label{pwn101_exploit}
+\end{listing}
+\par To run the exploit, it is necessary to make sure that standard input is not closed as soon as the payload is sent. See listing \ref{pwn101_cmd} for an example of command execution.
+\begin{listing}
+	\insertcode{sh}{pwn101.sh}
+	\caption{Command to run the exploit from listing \ref{pwn101_exploit}.}
+	\label{pwn101_cmd}
+\end{listing}
