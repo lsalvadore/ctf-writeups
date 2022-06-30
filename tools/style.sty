@@ -1,0 +1,14 @@
+\ProvidesPackage{style}
+
+\usepackage[a4paper]{geometry}
+\usepackage{minted}
+\usepackage{hyperref}
+\newcommand{\insertcode}[2]{\inputminted[frame=single]{#1}{#2}}
+
+\newcommand{\Address}[1]{\textbf{#1}}
+\newcommand{\FunctionName}[1]{\textbf{#1}}
+\newcommand{\Hexadecimal}[1]{\textbf{#1}}
+\newcommand{\InstructionName}[1]{\textsc{#1}}
+\newcommand{\LanguageName}[1]{\textit{#1}}
+\newcommand{\SoftwareName}[1]{\textit{#1}}
+\newcommand{\String}[1]{\textbf{#1}}
