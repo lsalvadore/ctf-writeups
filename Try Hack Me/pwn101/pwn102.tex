@@ -1,0 +1,26 @@
+\section{pwn102.}
+\par We start by disassembling the binary and analyzing the code for the \FunctionName{main} function, see listing \ref{pwn102_disassembly_main}.
+\begin{listing}
+	\input{pwn102.asm}
+	\caption{Disassembly of pwn102's \FunctionName{main} function.}
+	\label{pwn102_disassembly_main}
+\end{listing}
+\par At address \Address{0x954} we find the \FunctionName{scanf} function:
+\begin{itemize}
+	\item at address \Address{0x941} we read that \FunctionName{scanf} writes at address \Address{rbp - 0x70};
+	\item at address \Address{0x948} we read that \FunctionName{scanf}'s format string is at address \Address{rip + 0x217 = 0x94f + 0x217 = 0xb66}. The format string is ``\String{\%s}''.
+\end{itemize}
+\par Then we have a buffer overflow: we can write whatever we want starting at address \Address{rbp - 0x70}.
+\par At address \Address{0x98b} the function \FunctionName{system} is called. We can read its argument at address \Address{0x984}: it is \Address{rip + 0x1f4 = 0x98b + 0x1f4 = 0xb7f}: by reading the data into the binary, we discover that it is the address of the string ``\String{/bin/sh}''.
+\par We now examine the flow of the \FunctionName{main} function to understand how do we get to address \Address{0x984}. We have two \InstructionName{cmp} instructions: one is at address \Address{0x959} and the other one at address \Address{0x962}. We need to set the double words at addresses \Address{rbp - 0x4} and \Address{rbp - 0x8} to \Hexadecimal{0xc0ff33} and \Hexadecimal{0xc0de} respectively to run the \FunctionName{system} function and get our shell, which we can do by exploiting the buffer overflow that we have found: see fo example listing \ref{pwn102_exploit}.
+\begin{listing}
+	\insertcode{python}{pwn102.py}
+	\caption{Exploit for pwn102.}
+	\label{pwn102_exploit}
+\end{listing}
+\par To run the exploit, it is necessary to make sure that standard input is not closed as soon as the payload is sent. See listing \ref{pwn102_cmd} for an example of command execution.
+\begin{listing}
+	\insertcode{sh}{pwn101.sh}
+	\caption{Command to run the exploit from listing \ref{pwn102_exploit}.}
+	\label{pwn102_cmd}
+\end{listing}
