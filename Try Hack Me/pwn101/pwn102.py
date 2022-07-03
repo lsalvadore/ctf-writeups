@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+# pwn102.py
 
 import struct
 import sys
