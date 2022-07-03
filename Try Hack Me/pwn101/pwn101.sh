@@ -1,1 +1,1 @@
-(python3 pwn101.py; cat -) | ./pwn101.pwn101
+(python3 pwn101.py; cat -) | nc pwn101.thm 9001
