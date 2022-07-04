@@ -1,0 +1,46 @@
+\section{pwn103.}
+\par We start by disassembling the binary and analyzing the code for the \FunctionName{main} function, see listing \ref{pwn103_disassembly_main}.
+\begin{listing}
+	{\small\input{pwn103_main.asm}}
+	\caption{Disassembly of pwn103's \FunctionName{main} function.}
+	\label{pwn103_disassembly_main}
+\end{listing}
+\par At address \Address{0x4015ff} we find the \FunctionName{scanf} function, followed by some \InstructionName{cmp} instructions. According to what value we pass as input, we run a different function. We want to inspect the \FunctionName{general} function, see listing \ref{pwn103_disassembly_general}.
+\begin{listing}
+	\input{pwn103_general.asm}
+	\caption{Disassembly of pwn103's \FunctionName{general} function.}
+	\label{pwn103_disassembly_general}
+\end{listing}
+\par At address \Address{0x40132c} we find the \FunctionName{scanf} function again:
+\begin{itemize}
+	\item at address \Address{0x401316} we read that \FunctionName{scanf} writes at address \Address{rbp - 0x20};
+	\item at address \Address{0x40131d} we read that \FunctionName{scanf}'s format string is at address \Address{rip + 0x1138 = 0x401324 + 0x1138 = 0x40245c}. The format string is ``\String{\%s}''.
+\end{itemize}
+\par Then we have a buffer overflow: we can write whatever we want starting at address \Address{rbp - 0x20}.
+\par Among our binary's functions we find one that looks particular useful: \FunctionName{admins\_only}, listing \ref{pwn103_disassembly_admins_only}.
+\begin{listing}
+	\input{pwn103_admins_only.asm}
+	\caption{Disassembly of pwn103's \FunctionName{admins\_only} function.}
+	\label{pwn103_disassembly_admins_only}
+\end{listing}
+\par At address \Address{0x401584} the function \FunctionName{system} is called. We can read its argument at address \Address{0x40157a}: it is \Address{rip + 0x1d0e = 0x411581 + 0x1d0e = 0x40328f}: by reading the data into the binary, we discover that it is the address of the string ``\String{/bin/sh}''.
+\par We can use the buffer overflow vulnerability found earlier to jump to the \FunctionName{admins\_only} function: we want to write the address of the function (i.e. \Address{0x401554}) at the address where the \FunctionName{general} function reads its returning address (ie. \Address{rbp + 0x8}, where \RegisterName{rbp} is the value of that the register has in \FunctionName{general}). However this would not work, due to a stack alignement issue.
+\par Usually, we call a function through the \InstructionName{call} instruction. System V Application Binary Interface requires that as soon as the new function starts \Address{rsp - 0x8} is a multiple of \Hexadecimal{0x10}; in other words, \RegisterName{rsp} must be a multiple of \Hexadecimal{0x10} just before executing \InstructionName{call}. But in our case, we are not calling the new function through \InstructionName{call}: we are using \InstructionName{ret} instead. Moreover \InstructionName{ret} is preceded by a \InstructionName{leave} instruction, which restores \RegisterName{rsp} to the value it had immediately after \FunctionName{general} was called, before its stack frame initialization, i.e. \RegisterName{rsp - 0x8} is restored to a value multiple of \Hexadecimal{0x10}. \InstructionName{ret} then pops the returning address (which we would like to overwrite with \FunctionName{admins\_only}'s address), so that after its execution it is \RegisterName{rsp} to be multiple of \Hexadecimal{0x10}; thus we see that jumping to \FunctionName{admins\_only} directly would break the alignment convention, which risks to generate a \SignalName{SIBGUS} signal.
+\par An easy solution, implemented in listing \ref{pwn102_exploit}, consists in jumping a bit further into \FunctionName{admins\_only}, more precisely after the stack frame initialization; i.e. at address {\Address{0x40155c}}.
+\begin{listing}
+	\insertcode{python}{pwn103.py}
+	\caption{Exploit for pwn103.}
+	\label{pwn103_exploit}
+\end{listing}
+\par Another possibility is to run twice the same \InstructionName{ret} instruction, so that the correct alignment is restored and we can run \FunctionName{admins\_only} fully, stack frame initialization included. This is showcased by listing \ref{pwn103_exploit_alt}.
+\begin{listing}
+	\insertcode{python}{pwn103_alt.py}
+	\caption{Another exploit for pwn103.}
+	\label{pwn103_exploit_alt}
+\end{listing}
+\par To run the exploit, it is necessary to make sure that standard input is not closed as soon as the payload is sent. See listing \ref{pwn103_cmd} for an example of command execution.
+\begin{listing}
+	\insertcode{sh}{pwn103.sh}
+	\caption{Command to run the exploit from listing \ref{pwn103_exploit}.}
+	\label{pwn103_cmd}
+\end{listing}
