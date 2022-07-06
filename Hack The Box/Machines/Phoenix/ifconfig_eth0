@@ -1,0 +1,10 @@
+\begin{verbatim}
+eth0: flags=195<UP,BROADCAST,RUNNING,NOARP>  mtu 1500
+        inet 10.11.12.13  netmask 255.255.255.0  broadcast 0.0.0.0
+        inet6 fe80::1cf3:92ff:fe18:5ba9  prefixlen 64  scopeid 0x20<link>
+        ether 1e:f3:92:18:5b:a9  txqueuelen 1000  (Ethernet)
+        RX packets 0  bytes 0 (0.0 B)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 2789  bytes 206274 (206.2 KB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+\end{verbatim}

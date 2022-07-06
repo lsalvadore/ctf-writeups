@@ -1,0 +1,30 @@
+\section{Privilege escalation to root.}
+\par By classical enumeration we find the file \FileName{/usr/local/bin/cron.sh.x}. If we try to run it the process will hang for a while. We put it in the background and look at the process tree with \mintinline{bash}{ps axjf}, see listing \ref{phoenix_ps.out}. We see that a child process of \FileName{cron.sh.x} is running \SoftwareName{rsync}. Looking at the command line that spawned it through \FileName{/proc}, we get a full script which is likely run by \SoftwareName{cron.sh.x}, see listings \ref{phoenix_proc.sh} and \ref{phoenix_cron.sh.x}.
+\begin{listing}
+  \tiny
+  \input{ps.out}
+  \caption{\MachineName{Phoenix}: Process tree for \FileName{cron.sh.x}.}
+  \label{phoenix_ps.out}
+\end{listing}
+\begin{listing}
+  \insertcode{bash}{proc.sh}
+  \caption{\MachineName{Phoenix}: Command to check how the \FileName{rsync} process was started.}
+  \label{phoenix_proc.sh}
+\end{listing}
+\begin{listing}
+  \insertcode{bash}{script.sh}
+  \caption{\MachineName{Phoenix}: Script associated with \FileName{cron.sh.x}.}
+  \label{phoenix_cron.sh.x}
+\end{listing}
+\par We notice that the script runs \SoftwareName{rsync}. \SoftwareName{rsync} supports an \OptionName{-e} option that allows us to run arbitrary commands. Thanks to the use of wildcards, we can inject whatever we want in the command as long as it contains a period: we need to create a file in \FileName{/backups} with our injection payload as filename, see listing \ref{phoenix_touch}. As we can see, our payload references a script called \FileName{root-reverse-shell.sh}, shown in listing \ref{phoenix_root-reverse-shell}, that we also create in \FileName{/backups}: this trick allows us to simplify our payload and avoid the bad character "/", which whould confuse our \SoftwareName{touch} command.
+\begin{listing}
+  \insertcode{bash}{touch.sh}
+  \caption{\MachineName{Phoenix}: Payload creation to escalate privileges to root.}
+  \label{phoenix_touch}
+\end{listing}
+\begin{listing}
+  \insertcode{bash}{root-reverse-shell.sh}
+  \caption{\MachineName{Phoenix}: Content of \FileName{root-reverse-shell.sh}.}
+  \label{phoenix_root-reverse-shell}
+\end{listing}
+\par We only need to run a listener on the right port on our attacking machine and wait: as soon as the script in listing \ref{phoenix_cron.sh.x} is run we will get our root reverse shell. We must be careful however to not take too much time to prepare our exploit, as our files are periodically removed from the directory.

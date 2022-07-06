@@ -1,0 +1,13 @@
+\begin{verbatim}
+[+] asgaros-forum
+ | Location: https://phoenix.htb/wp-content/plugins/asgaros-forum/
+ | Last Updated: 2022-01-30T12:54:00.000Z
+ | [!] The version is out of date, the latest version is 2.0.0
+ |
+ | Found By: Urls In Homepage (Passive Detection)
+ | Confirmed By: Urls In 404 Page (Passive Detection)
+ |
+ | Version: 1.15.12 (10% confidence)
+ | Found By: Query Parameter (Passive Detection)
+ |  - https://phoenix.htb/wp-content/plugins/asgaros-forum/skin/widgets.css?ver=1.15.12
+\end{verbatim}

@@ -1,0 +1,25 @@
+\section{Privilege escalation to user.}
+\par Using our reverse shell, we can finally inspect the system. First, we look at \FileName{/etc/passwd}, where we find two user accounts and the \LoginName{root} account (see listing \ref{phoenix_passwd}).
+\begin{listing}
+  \input{passwd}
+  \caption{\MachineName{Phoenix}: Users and \LoginName{root} lines in \FileName{/etc/passwd} from \DomainName{phoenix.htb}.}
+  \label{phoenix_passwd}
+\end{listing}
+\par In particular, we discover that John Smith has an account on the machine named \LoginName{editor}, and not \LoginName{jsmith} or \LoginName{john} as we might have expected from our past enumeration. If we try to access the machine as the editor user using John Smith's password from listing \ref{phoenix_hashcat.out}, we note that our password is correct, but we are also asked a verification code, which we do not have.
+\par Back to our reverse shell, we search for more information about this verification code. Inspecting the file \FileName{/etc/pam.d/sshd} we note the line ``auth [success=1 default=ignore] pam\_access.so accessfile=/etc/security/access-local.conf'' which indicates that it is possible to login with ssh into the machine, without two factor authentication, according to the rules reported in file \FileName{/etc/security/access-local.conf} (instead of the default \FileName{/etc/security/access.conf}) (listing \ref{phoenix_access-local.conf}).
+\begin{listing}
+  \input{access-local.conf}
+  \caption{\MachineName{Phoenix}: Content of \FileName{/etc/security/access-local.conf} from \DomainName{phoenix.htb}.}
+  \label{phoenix_access-local.conf}
+\end{listing}
+\par We can then use \SoftwareName{ssh} to login into the machine with password only if we connect within the 10.11.12.13/24 network\footnote{This is a very unusual notation for a network: usually, if a network written in CIDR notation ends in ``/24'', then the last network IP octet is set to 0.}. Checking with ifconfig we see that we have indeed an interface associated with an IP in the right network: \InterfaceName{eth0}, see \ref{phoenix_ifconfig_eth0}. Thus we can connect successfully running the command in listing \ref{phoenix_ssh} within our reverse shell.
+\begin{listing}
+  \input{ifconfig_eth0}
+  \caption{\MachineName{Phoenix}: Output associated with \InterfaceName{eth0} given by \SoftwareName{ifconfig} on \DomainName{phoenix.htb}.}
+  \label{phoenix_ifconfig_eth0}
+\end{listing}
+\begin{listing}
+  \insertcode{bash}{ssh.sh}
+  \caption{\MachineName{Phoenix}: Escalate privilege to user in \DomainName{phoenix.htb}.}
+  \label{phoenix_ssh}
+\end{listing}

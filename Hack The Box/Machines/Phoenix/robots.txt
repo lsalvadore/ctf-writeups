@@ -1,0 +1,7 @@
+\begin{verbatim}
+User-agent: *
+Disallow: /wp-admin/
+Allow: /wp-admin/admin-ajax.php
+
+Sitemap: https://phoenix.htb/wp-sitemap.xml
+\end{verbatim}

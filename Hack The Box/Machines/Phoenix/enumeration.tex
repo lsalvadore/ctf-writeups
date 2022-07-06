@@ -1,0 +1,106 @@
+\section{Initial enumeration.}
+\par We begin by scanning \DomainName{phoenix.htb} for open TCP ports, see listing \ref{phoenix_nmap}.
+\begin{listing}
+  \tiny
+  \input{tcp_all.nmap}
+  \caption{\MachineName{Phoenix}: Output of \SoftwareName{nmap} for \DomainName{phoenix.htb}.}
+  \label{phoenix_nmap}
+\end{listing}
+\par We remark that \ServiceName{Apache httpd} is running on the machine and that connection on port 80 is immediately redirected to port 443, where an \ProtocolName{https} website is available. We also note that we have a \FileName{robots.txt} file: we download the file to inspect it fully, see listing \ref{phoenix_robots}.
+\begin{listing}
+  \input{robots.txt}
+  \caption{\MachineName{Phoenix}: \url{https://phoneix.htb/robots.txt}}
+  \label{phoenix_robots}
+\end{listing}
+\par As it could already be deduced from listing \ref{phoenix_nmap}, the website uses wordpress. We also find the file \FileName{wp-sitemap.xml} (listing \ref{phoenix_wp-sitemap}), which reveals the existence of the file \FileName{wp-sitemap-users-1.xml} (listing \ref{phoenix_wp-sitemap-users-1}), where we find two potential usernames: \UserName{phoenix} and \UserName{jsmith}.
+\begin{listing}
+  \small
+  \insertcode{xml}{wp-sitemap.xml}
+  \caption{\MachineName{Phoenix}: \url{https://phoneix.htb/wp-sitemap.xml}}
+  \label{phoenix_wp-sitemap}
+\end{listing}
+\begin{listing}
+  \insertcode{xml}{wp-sitemap-users-1.xml}
+  \caption{\MachineName{Phoenix}: \url{https://phoneix.htb/wp-sitemap-users-1.xml}.}
+  \label{phoenix_wp-sitemap-users-1}
+\end{listing}
+\par Trying to enumerate directories or virtual hosts would not be very efficient, as there is a brute force blocking mechanism in place. Listing \ref{phoenix_brute_force_block} shows the webpage warning us about our IP being blocked when we attempt such a strategy.
+\begin{listing}
+  \tiny
+  \insertcode{html}{ip_blocked.html}
+  \caption{\MachineName{Phoenix}: IP blocked by \DomainName{phoenix.html}.}
+  \label{phoenix_brute_force_block}
+\end{listing}
+\par We can however run a passive plugins scan with \SoftwareName{wpscan} (listing \ref{wpscan.sh}). In particular, we find the \SoftwareName{asgaros-forum} plugin, see listing \ref{phoenix_asgaros-forum}.
+\begin{listing}
+  \insertcode{bash}{wpscan.sh}
+  \caption{\MachineName{Phoenix}: \SoftwareName{wpscan} passive plugins scan command on \DomainName{phoenix.htb}.}
+  \label{wpscan.sh}
+\end{listing}
+\begin{listing}
+  \input{wpscan_asgaros-forum.log}
+  \caption{\MachineName{Phoenix}: \SoftwareName{asgaros-forum} detection by \SoftwareName{wpscan}.}
+  \label{phoenix_asgaros-forum}
+\end{listing}
+\par The version is 1.15.12 and is vulnerable to \CVE{CVE-2021-24827}: at \url{https://wpscan.com/vulnerability/36cc5151-1d5e-4874-bcec-3b6326235db1} we can find a proof of concept to modify and test. Listing \ref{phoenix_asgaros_poc} shows how we modified the proposed proof: we changed the domain, run \SoftwareName{curl} twice with different sleeping interval to ensure that we do not wait for our response the expected amount of time for a simple coincidence, and measure times using \SoftwareName{time}. Running our own proof of concept, we confirm that the plugin version is vulnerable.
+\begin{listing}
+  \tiny
+  \insertcode{bash}{poc.sh}
+  \caption{\MachineName{Phoenix}: Proof of concept for \CVE{CVE-2021-24827}.}
+  \label{phoenix_asgaros_poc}
+\end{listing}
+\par We can then go forward with our enumeration using \SoftwareName{sqlmap}. We want first to enumerate databases, so we start by running the command in listing \ref{phoenix_sqlmap_1.sh}: we find \DatabaseName{information\_schema} and \DatabaseName{wordpress} (listing \ref{phoenix_sqlmap_1.log}).
+\begin{listing}
+  \insertcode{bash}{sqlmap_1.sh}
+  \caption{\MachineName{Phoenix}: Enumerate databases in \DomainName{phoenix.htb}.}
+  \label{phoenix_sqlmap_1.sh}
+\end{listing}
+\begin{listing}
+  \input{sqlmap_1.log}
+  \caption{\MachineName{Phoenix}: Databases found by running listing \ref{phoenix_sqlmap_1.sh}.}
+  \label{phoenix_sqlmap_1.log}
+\end{listing}
+\par As wordpress databases have a standard structure, we can keep enumerating by searching for specific things, without the risk of getting our IP blocked or taking too much time. We now look for credentials in the \TableName{wp\_users} table, see listings \ref{phoenix_sqlmap_2.sh} and \ref{phoenix_sqlmap_2.log}.
+\begin{listing}
+  \insertcode{bash}{sqlmap_2.sh}
+  \caption{\MachineName{Phoenix}: Enumerate worpress users and passwords in \DomainName{phoenix.htb}.}
+  \label{phoenix_sqlmap_2.sh}
+\end{listing}
+\begin{listing}
+  \input{sqlmap_2.log}
+  \caption{\MachineName{Phoenix}: Users and passwords found by running listing \ref{phoenix_sqlmap_2.sh}.}
+  \label{phoenix_sqlmap_2.log}
+\end{listing}
+\par We can easily check the hash type using \SoftwareName{haiti}, which reports a \SoftwareName{wordpress} hash type: no surprise, the machine is using \SoftwareName{wordpress} indeed. See listings \ref{phoenix_haiti.sh} and \ref{phoenix_haiti.out}.
+\begin{listing}
+  \insertcode{bash}{haiti.sh}
+  \caption{\MachineName{Phoenix}: Identify hash type found in listing \ref{phoenix_sqlmap_2.sh}.}
+  \label{phoenix_haiti.sh}
+\end{listing}
+\begin{listing}
+  \input{haiti.out}
+  \caption{\MachineName{Phoenix}: Output of listing \ref{phoenix_haiti.sh}.}
+  \label{phoenix_haiti.out}
+\end{listing}
+\par We attempt to crack those hashes and we successfully find some passwords. See listings \ref{phoenix_hashcat.sh} and \ref{phoenix_hashcat.out}.
+\begin{listing}
+  \insertcode{bash}{hashcat.sh}
+  \caption{\MachineName{Phoenix}: Command to crack hashes from listing \ref{phoenix_sqlmap_2.log}.}
+  \label{phoenix_hashcat.sh}
+\end{listing}
+\begin{listing}
+  \input{hashcat.out}
+  \caption{\MachineName{Phoenix}: Password found through the command from listing \ref{phoenix_hashcat.sh}.}
+  \label{phoenix_hashcat.out}
+\end{listing}
+\par Before closing our initial enumeration, there is a last thing we are going to check. Because of the brute force protection we encountered, we could only run a passive plugins scan with \SoftwareName{wpscan}, but now thanks to \CVE{CVE-2021-24827} we can read the list of active plugins through \SoftwareName{sqlmap}, see listing \ref{phoenix_sqlmap_3.sh}. The scan needs a fair amount of time, but is rewarding as it is able to find some plugins that we could not find earlier, see listing \ref{phoenix_sqlmap_3.log}: in particular we find the plugin \SoftwareName{download-from-files}, from which we will get our foothold.
+\begin{listing}
+  \insertcode{bash}{sqlmap_3.sh}
+  \caption{\MachineName{Phoenix}: Enumerate wordpress active plugins in \DomainName{phoenix.htb}.}
+  \label{phoenix_sqlmap_3.sh}
+\end{listing}
+\begin{listing}
+  \input{sqlmap_3.log}
+  \caption{\MachineName{Phoenix}: Active plugins found by running the command in listing \ref{phoenix_sqlmap_3.sh}. Output has been edited to fit the page.}
+  \label{phoenix_sqlmap_3.log}
+\end{listing}
