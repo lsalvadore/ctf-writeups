@@ -1,0 +1,13 @@
+\section{Introduction.}
+\par \MachineName{} is a machine rated . We will use the following software:
+\begin{itemize}
+  \item \SoftwareName{nmap} for port scanning;
+  \item \SoftwareName{curl} for accessing webpages;
+  \item \SoftwareName{xmllint} to prettify xml files;
+  \item \SoftwareName{wpscan} for wordpress scanning;
+  \item \SoftwareName{sqlmap} to take advantage of a sql injection;
+  \item \SoftwareName{haiti} to identify hash types;
+  \item \SoftwareName{hashcat} to crack hashes;
+  \item \SoftwareName{nc} to receive reverse shells.
+\end{itemize}
+\par We add the domain \DomainName{.htb} to our \FileName{/etc/hosts} file with the IP provided by Hack The Box.
