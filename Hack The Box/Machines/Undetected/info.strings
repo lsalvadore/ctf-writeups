@@ -1,0 +1,11 @@
+\begin{verbatim}
+/etc/shadow
+[.] checking if we got root
+[-] something went wrong =(
+[+] got r00t ^_^
+[.] KASLR bypass enabled, getting kernel addr
+[.] SMEP & SMAP bypass enabled, turning them off
+[.] done, SMEP & SMAP should be off now
+[.] executing get root payload %p
+[.] done, should be root now
+\end{verbatim}

@@ -1,0 +1,26 @@
+\section{Privilege escalation to user.}
+\par We first look at file \FileName{/etc/passwd} (listing \ref{undetected_passwd}) and found that the machine has two users -- \LoginName{steven} and \LoginName{steven1} -- that are almost identical. In particular, they have the same user id, so they are actually the same user: this is quite unusual and suggests that the machine has already been hacked by someone else, that this someone else might have already managed to get access to it and get persistence, and that all of this has gone \emph{undetected}.
+\begin{listing}
+  \input{passwd}
+  \caption{\MachineName{Undetected}: Users and \LoginName{root} lines in \FileName{/etc/passwd}.}
+  \label{undetected_passwd}
+\end{listing}
+\par Going forward with some basic machine enumeration, we find an usual file in \FileName{/var/backups} which is owned by \UserName{www-data} (while all the other files are owned by \UserName{root}): \FileName{info}. We transfer the file on our own machine\footnote{For example, we can do it by starting a web server in \FileName{/var/backups} with \mintinline{bash}{python3 -m http.server}.} for further examinations. We start by runnings \SoftwareName{strings} on it: we find some strings that suggests that the file has been used by some attacker to manipulate the \FileName{/etc/shadow} in a malicious way (listing \ref{undetected_info.strings}) and a long hexadecimal number that might be an encoded string. We also remark that the long hexadecimal number contains many times ``\Hexadecimal{20}'', which is the ASCII code for spaces and thus is another clue that the string might be encoded. We decode it using the command in listing \ref{undetected_decode-info-payload.sh}.
+\begin{listing}
+  \input{info.strings}
+  \caption{\MachineName{Undetected}: A list of suspect strings found in \FileName{info}.}
+  \label{undetected_info.strings}
+\end{listing}
+\begin{listing}
+  \tiny
+  \insertcode{bash}{decode-info-payload.sh}
+  \caption{\MachineName{Undetected}: Command to decode the hexadecimal string found in \FileName{info} and placed into the \mintinline{bash}{HEXADECIMAL_STRING} variable.}
+  \label{undetected_decode-info-payload.sh}
+\end{listing}
+\par We note that the encoded commands do create lines such as the one we found for user \UserName{steven1} in \FileName{/etc/passwd}. We also find the hash for the password used to create the user: see listing \ref{undetected_hash}.
+\begin{listing}
+  \tiny
+  \input{hash}
+  \caption{\MachineName{Undetected}: Password hash for \UserName{steven1}.}
+  \label{undetected_hash}
+\end{listing}

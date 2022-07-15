@@ -1,0 +1,56 @@
+\section{Initial enumeration.}
+\par We begin by scanning \DomainName{undetected.htb} for open TCP ports, see listing \ref{undetected_nmap}.
+\begin{listing}
+  \small
+	\input{tcp-all.nmap}
+	\caption{\MachineName{Undetected}: Output of \SoftwareName{nmap}.}
+	\label{undetected_nmap}
+\end{listing}
+\par On port 80 we find an \ProtocolName{http} website. Inspecting it with \SoftwareName{curl}, we find that it links to \url{http://store.djewelry.htb} (listings \ref{undetected_curl-find-store.sh} and \ref{undetected_curl-find-store.html}), thus we add \DomainName{djewelry.htb} and \DomainName{store.djewelry.htb} to our \FileName{/etc/hosts} file, boths associated with the IP of the machine.
+\begin{listing}
+	\insertcode{bash}{curl-find-store.sh}
+	\caption{\MachineName{Undetected}: Command that finds the \DomainName{store.djewelry.htb} subdomain.}
+	\label{undetected_curl-find-store.sh}
+\end{listing}
+\begin{listing}
+  \tiny
+	\insertcode{html}{curl-find-store.html}
+	\caption{\MachineName{Undetected}: Output of the command in listing \ref{undetected_curl-find-store.sh}.}
+	\label{undetected_curl-find-store.html}
+\end{listing}
+\par We now attempt to discover some directories in our domains and subdomains: in particular, we find something interesting in \DomainName{store.djewelry.htb}, see listings \ref{undetected_gobuster_store.sh} and \ref{undetected_gobuster_store.out}.
+\begin{listing}
+  \small
+	\insertcode{bash}{gobuster-store.sh}
+	\caption{\MachineName{Undetected}: Gobuster command to discover directories in \DomainName{store.djewelry.htb}.}
+	\label{undetected_gobuster_store.sh}
+\end{listing}
+\begin{listing}
+	\input{gobuster-store.out}
+	\caption{\MachineName{Undetected}: Output of the command in listing \ref{undetected_gobuster_store.sh}}.
+	\label{undetected_gobuster_store.out}
+\end{listing}
+\par We inspect the \FileName{vendor} directory (listings \ref{undetected_curl_list_vendor.sh} and \ref{undetected_curl_list_vendor.html}) and find \SoftwareName{phpunit}. By reading \url{http://store.djewelry.htb/vendor/phpunit/phpunit/ChangeLog-5.6.md} (the available changelog which is the most up to date), we find that we are running version 5.6.2, which is known to be vulnerable to \CVE{CVE-2017-9841} (see listings \ref{undetected_curl_phpunit.sh} and \ref{undetected_curl_phpunit.md}).
+\begin{listing}
+  \small
+	\insertcode{bash}{curl-list-vendor.sh}
+	\caption{\MachineName{Undetected}: Command to list the content of \url{http://store.djewelry.htb/vendor/}.}
+	\label{undetected_curl_list_vendor.sh}
+\end{listing}
+\begin{listing}
+  \tiny
+	\insertcode{html}{curl-list-vendor.html}
+	\caption{\MachineName{Undetected}: Output of the command in listing \ref{undetected_curl_list_vendor.sh}, modified to fit the page.}
+	\label{undetected_curl_list_vendor.html}
+\end{listing}
+\begin{listing}
+	\insertcode{bash}{curl-phpunit-version.sh}
+	\caption{\MachineName{Undetected}: Command to attempt to find \SoftwareName{phpunit} version.}
+	\label{undetected_curl_phpunit.sh}
+\end{listing}
+\begin{listing}
+  \tiny
+	\insertcode{md}{curl-phpunit-version.md}
+	\caption{\MachineName{Undetected}: Top of the output of the command in listing \ref{undetected_curl_phpunit.sh}.}
+	\label{undetected_curl_phpunit.md}
+\end{listing}

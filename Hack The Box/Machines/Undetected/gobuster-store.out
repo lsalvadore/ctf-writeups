@@ -1,0 +1,7 @@
+\begin{verbatim}
+/images               (Status: 301) [Size: 325] [--> http://store.djewelry.htb/images/]
+/css                  (Status: 301) [Size: 322] [--> http://store.djewelry.htb/css/]
+/js                   (Status: 301) [Size: 321] [--> http://store.djewelry.htb/js/]
+/vendor               (Status: 301) [Size: 325] [--> http://store.djewelry.htb/vendor/]
+/fonts                (Status: 301) [Size: 324] [--> http://store.djewelry.htb/fonts/]
+\end{verbatim}

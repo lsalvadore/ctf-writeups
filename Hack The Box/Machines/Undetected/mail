@@ -1,0 +1,25 @@
+\begin{verbatim}
+From root@production  Sun, 25 Jul 2021 10:31:12 GMT
+Return-Path: <root@production>
+Received: from production (localhost [127.0.0.1])
+        by production (8.15.2/8.15.2/Debian-18) with ESMTP id 80FAcdZ171847
+        for <steven@production>; Sun, 25 Jul 2021 10:31:12 GMT
+Received: (from root@localhost)
+        by production (8.15.2/8.15.2/Submit) id 80FAcdZ171847;
+        Sun, 25 Jul 2021 10:31:12 GMT
+Date: Sun, 25 Jul 2021 10:31:12 GMT
+Message-Id: <202107251031.80FAcdZ171847@production>
+To: steven@production
+From: root@production
+Subject: Investigations
+
+Hi Steven.
+
+We recently updated the system but are still experiencing some strange behaviour with the Apache service.
+We have temporarily moved the web store and database to another server whilst investigations are underway.
+If for any reason you need access to the database or web application code, get in touch with Mark and he
+will generate a temporary password for you to authenticate to the temporary server.
+
+Thanks,
+sysadmin
+\end{verbatim}

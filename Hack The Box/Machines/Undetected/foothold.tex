@@ -1,0 +1,15 @@
+\section{Foothold.}
+\par We create a proof of concept to check if the \SoftwareName{phpunit} version installed is indeed vulnerable to \CVE{CVE-2017-9841}: see listing \ref{undetected_poc.sh}; its output is \mintinline{bash}{www-data}.
+\begin{listing}
+  \small
+	\insertcode{bash}{poc.sh}
+	\caption{\MachineName{Undetected}: Proof of concept for \CVE{CVE-2017-9841}.}
+	\label{undetected_poc.sh}
+\end{listing}
+\par Now that we have confirmed that the \SoftwareName{phpunit} version is indeed vulnerable, we exploit it to obtain a reverse shell as the \UserName{www-data} user using listing \ref{undetected_reverse-shell.sh}
+\begin{listing}
+  \small
+	\insertcode{bash}{reverse-shell.sh}
+	\caption{\MachineName{Undetected}: Script to get a reverse shell exploiting \CVE{CVE-2017-9841}.}
+	\label{undetected_reverse-shell.sh}
+\end{listing}
