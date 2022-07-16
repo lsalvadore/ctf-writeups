@@ -3,6 +3,7 @@
 \begin{itemize}
   \item \SoftwareName{nmap} for port scanning;
   \item \SoftwareName{curl} for accessing webpages;
+  \item \SoftwareName{gobuster} for discovering directories;
   \item \SoftwareName{xmllint} to prettify xml files;
   \item \SoftwareName{wpscan} for wordpress scanning;
   \item \SoftwareName{sqlmap} to take advantage of a sql injection;

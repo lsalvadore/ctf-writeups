@@ -5,4 +5,9 @@
 \date{}
 \begin{document}
 	\maketitle
+	\input{introduction.tex}
+	\input{enumeration.tex}
+	\input{foothold.tex}
+	\input{user.tex}
+	\input{root.tex}
 \end{document}
