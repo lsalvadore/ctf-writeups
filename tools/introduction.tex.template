@@ -9,6 +9,7 @@
   \item \SoftwareName{sqlmap} to take advantage of a sql injection;
   \item \SoftwareName{haiti} to identify hash types;
   \item \SoftwareName{hashcat} to crack hashes;
-  \item \SoftwareName{nc} to receive reverse shells.
+  \item \SoftwareName{nc} to receive reverse shells;
+  \item \SoftwareName{ghidra} to decompile binaries.
 \end{itemize}
 \par We add the domain \DomainName{.htb} to our \FileName{/etc/hosts} file with the IP provided by Hack The Box.
