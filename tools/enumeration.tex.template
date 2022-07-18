@@ -1,7 +1,7 @@
 \section{Initial enumeration.}
 \par We begin by scanning \DomainName{} for open TCP ports, see listing \ref{_nmap}.
 \begin{listing}
-	\input{tcp_all.nmap}
+	\input{tcp-all.nmap}
 	\caption{\MachineName{}: Output of \SoftwareName{nmap}.}
 	\label{_nmap}
 \end{listing}
