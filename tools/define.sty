@@ -1,0 +1,13 @@
+\ProvidesPackage{define}
+
+\newcommand{\NIDefine}[1]{\emph{#1}}
+\DeclareDocumentCommand \Define {m o o}
+        {
+                \IfNoValueTF{#3}
+                {
+                        \IfNoValueTF{#2}
+                        {\NIDefine{#1}\index{#1}}
+                        {\NIDefine{#1}\index{#2}}
+                }
+                {\NIDefine{#1}\index{#3!#2}}
+        }
