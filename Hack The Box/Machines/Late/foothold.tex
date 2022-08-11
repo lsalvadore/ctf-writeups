@@ -1,0 +1,12 @@
+\section{Foothold.}
+\par The fact that the web application uses Flask strongly suggests that it might be vulnerable to some kind of SSTI. We craft a short proof of concept to check it: we create a text file with a typical payload (see listing \ref{late_poc.txt}), we make a screenshot of it (we include only the text we want, we make the font as big and clear as possible, we choose an homogeneous background with a color that makes a good contrast with the text), we upload it and we check the result (see list \ref{late_poc.out}). It works, and we also discover the web application is running as user \UserName{svc\_acc}. We now have remote code execution and we can read the output of our commands.
+\begin{listing}
+	\input{poc.txt}
+	\caption{\MachineName{Late}: SSTI proof of concept}
+	\label{late_poc.txt}
+\end{listing}
+\begin{listing}
+	\input{poc.out}
+	\caption{\MachineName{Late}: Result of the proof of concept in listing \ref{late_poc.txt}}
+	\label{late_poc.out}
+\end{listing}

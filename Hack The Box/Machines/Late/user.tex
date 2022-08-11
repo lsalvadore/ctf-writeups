@@ -1,0 +1,8 @@
+\section{Privilege escalation to user.}
+\par Since we can read the output of our commands, rather than using our remote code execution to get a reverse shell we can search for an \ProtocolName{ssh} private key. Indeed, we discover that a private key is available at \FileName{/home/svc\_acc/.ssh/id\_rsa}. With the payload in \ref{late_copy-private-key.txt} we can retrieve it. Then, we only need to remove the extra \ProtocolName{html} tags from the downloaded file, set the right permissions (\mintinline{bash}{chmod 600 id_rsa}, assuming the file has been renamed \FileName{id\_rsa}) and we can finally use it to enter the system (\mintinline{bash}{ssh -i id_rsa svc_acc@late.htb}).
+\begin{listing}
+  \footnotesize
+	\input{copy-private-key.txt}
+	\caption{\MachineName{Late}: Payload to retrieve \UserName{svc\_acc}'s \ProtocolName{ssh} private key.}
+	\label{late_copy-private-key.txt}
+\end{listing}

@@ -1,0 +1,10 @@
+\section{Initial enumeration.}
+\par We begin by scanning \DomainName{late.htb} for open TCP ports, see listing \ref{late_nmap}.
+\begin{listing}
+  \tiny
+	\input{tcp-all.nmap}
+	\caption{\MachineName{Late}: Opened TCP ports.}
+	\label{late_nmap}
+\end{listing}
+\par A website is running on port 80 and we visit it: we find a link to \url{http://images.late.htb} on the homepage and we add the subdomain to our \FileName{/etc/hosts} file.
+\par On \url{http:/images.late.htb} we find an interface claiming to convert images to text. By direct experimentation, we discover that the web application takes the text in the images we upload and returns us a text file with it. Moreover the web interface tells us that it uses Flask.

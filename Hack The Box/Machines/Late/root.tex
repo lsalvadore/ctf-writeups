@@ -1,0 +1,25 @@
+\section{Privilege escalation to root.}
+\par Classical enumeration brings us to discover the file \FileName{/usr/local/sbin/ssh-alert.sh}, for example as a file owned by \UserName{svc\_acc}: see listing \ref{late_ssh-alert.sh}.
+\begin{listing}
+  \insertcode{bash}{ssh-alert.sh}
+	\caption{\MachineName{Late}: Content of \FileName{/usr/local/sbin/ssh-alert.sh}.}
+	\label{late_ssh-alert.sh}
+\end{listing}
+\par It looks as a file that sends a mail to \UserName{root} whenever someone logs into the system through \ProtocolName{ssh}. Hopefully, \UserName{root} runs it regularly, maybe through a cron job, so that we can modify it to get a reverse shell. Looking at the file permissions with \mintinline{bash}{ls -l} it looks like we can edit it (and as we already observed, we even own it): see listing \ref{late_-ls_ssh-alert.sh}. However it is not as simple as it seems: indeed if we run \mintinline{bash}{lsattr} (listing \ref{late_lsattr_ssh-alert.sh}) we discover that we can only append text to the file, not editing it freely.
+\begin{listing}
+	\input{ls_-l_ssh-alert.sh}
+	\caption{\MachineName{Late}: Output of \mintinline{bash}{ls -l /usr/local/sbin/ssh-alert.sh}.}
+	\label{late_-ls_ssh-alert.sh}
+\end{listing}
+\begin{listing}
+	\input{lsattr_ssh-alert.sh}
+	\caption{\MachineName{Late}: Output of \mintinline{bash}{lsattr /usr/local/sbin/ssh-alert.sh}.}
+	\label{late_lsattr_ssh-alert.sh}
+\end{listing}
+\begin{listing}
+	\insertcode{bash}{reverse-shell.txt}
+	\caption{\MachineName{Late}: Payload to get a reverse shell.}
+	\label{late_reverse-shell.txt}
+\end{listing}
+\par Then we append a line to the file to send a reverse shell to our attacking machine (listing \ref{late_reverse-shell.txt}), open a listener for our reverse shell, log again into the machine as \UserName{svc\_acc} using \ProtocolName{ssh} and enjoy our \UserName{root} reverse shell.
+\par Warning: a mechanism is in place to restore \FileName{ssh-alert.sh} to its original content, so if you fail getting a reverse shell, you might have been too slow and need to try again appending your payload to \FileName{ssh-alert.sh}.
